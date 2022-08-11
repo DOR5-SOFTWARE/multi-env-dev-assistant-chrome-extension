@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Multiple environments developer assistant",
+  "description": "Extension that assists developers working with multiple development environments",
+  "version": "0.1.0",
+  "options_ui": {
+    "page": "views/options.html",
+    "open_in_tab": false
+  },
+  "action": {
+    "default_title": "Multiple Environments Developer Assistant",
+    "default_popup": "views/popup.html"
+  },
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "assets/web-development-16.png",
+    "24": "assets/web-development-24.png",
+    "32": "assets/web-development-32.png",
+    "64": "assets/web-development-64.png",
+    "128": "assets/web-development-128.png"
+  }
+}

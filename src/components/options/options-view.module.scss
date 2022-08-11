@@ -1,0 +1,15 @@
+.component {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 20px;
+}
+
+.options-section {
+    margin-bottom: 20px;
+    display: flex;
+    flex-flow: column nowrap;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
