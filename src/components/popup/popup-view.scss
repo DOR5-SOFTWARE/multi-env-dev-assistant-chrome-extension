@@ -1,0 +1,9 @@
+.popup-component {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 200px;
+
+    .card {
+        border-radius: 0;
+    }
+}

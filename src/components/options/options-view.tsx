@@ -1,11 +1,8 @@
-import Button from '@mui/material/Button/Button';
-import Stack from '@mui/material/Stack/Stack';
-import TextField from '@mui/material/TextField/TextField';
-import Typography from '@mui/material/Typography/Typography';
 import React, { useEffect, useState } from "react";
+import { Button, Form, Stack } from 'react-bootstrap';
 import { ExtensionStorageService } from '../../services/extension-storage.service';
 import { IConfig } from '../../types';
-import styles from './options-view.module.scss';
+import './options-view.scss';
 
 export const OptionsView = () => {
   const extensionStorageService = ExtensionStorageService.getService();
@@ -49,6 +46,14 @@ export const OptionsView = () => {
 
   const saveSettings = async (event: any) => {
     event.preventDefault();
+    if (stateConfig.localEnvironmentUrl) {
+      await chrome.scripting.registerContentScripts([{
+        id: 'local_dev_onstart',
+        matches: [`${stateConfig.localEnvironmentUrl}/*`],
+        runAt: 'document_start',
+        js: ['js/local_dev.js']
+      }]);
+    }
     await extensionStorageService.setValues({ config: stateConfig });
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) {
@@ -58,25 +63,29 @@ export const OptionsView = () => {
   }
 
   return (
-    <div className={ styles['component'] }>
-      <form onSubmit={ saveSettings }>
-        <div className={ styles['options-section'] }>
-          <Typography variant="subtitle2">Local environment url:</Typography>
-          <TextField variant="outlined" size="small" value={ stateConfig.localEnvironmentUrl } onChange={ handleInputTextChange } name="local-environment-url" />
-        </div>
-        <div className={ styles['options-section'] }>
-          <Typography variant="subtitle2">Sync the following fields:</Typography>
-          <Stack spacing={ 1 }>
+    <div className="options-component">
+      <Form>
+        <Form.Group className="options-section">
+          <Form.Label>Local environment url:</Form.Label>
+          <Form.Control value={ stateConfig.localEnvironmentUrl } onChange={ handleInputTextChange } name="local-environment-url" />
+        </Form.Group>
+        <Form.Group className="options-section">
+          <Form.Label>Sync the following fields:</Form.Label>
+          <Stack gap={ 2 }>
             { stateConfig.syncLocalStorageKeys?.map((fieldName, index) => (
-              <TextField variant="outlined" size="small" value={ fieldName } onChange={ handleInputTextChange } key={ `sync-field-${index}` } name={ `sync-field-${index}` } />
+              <Form.Control value={ fieldName } onChange={ handleInputTextChange } key={ `sync-field-${index}` } name={ `sync-field-${index}` } />
             )) }
-            <Button size="small" variant="text" onClick={ addSyncField }>Add Field</Button>
+            <Button variant="outline-primary" size="sm" onClick={ addSyncField }>Add Field</Button>
           </Stack>
-        </div>
-        <div className={ styles['options-section'] }>
-          <Button variant="contained" type="submit">Save</Button>
-        </div>
-      </form>
+        </Form.Group>
+        {/* <Form.Group className="options-section">
+          <Form.Label>SSO domain</Form.Label>
+          <Form.Control value={ stateConfig.ssoDomain } onChange={ handleInputTextChange } name="sso-domain" />
+        </Form.Group> */}
+        <Form.Group className="options-section">
+          <Button type="submit" onClick={ saveSettings }>Save</Button>
+        </Form.Group>
+      </Form>
     </div>
   );
 };

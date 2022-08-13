@@ -4,13 +4,12 @@
   "description": "Chrome extension that assists Firstnet Mission-Control development and debugging",
   "author": "anton@dor5.software",
   "license": "MIT",
+  "private": "true",
   "dependencies": {
-    "@emotion/react": "^11.10.0",
-    "@emotion/styled": "^11.10.0",
-    "@fontsource/roboto": "^4.5.7",
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.3",
+    "bootstrap": "^5.2.0",
+    "bootstrap-icons": "^1.9.1",
     "react": "^17.0.1",
+    "react-bootstrap": "^2.5.0",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {

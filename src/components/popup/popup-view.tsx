@@ -1,11 +1,10 @@
-import Button from '@mui/material/Button/Button';
-import Stack from '@mui/material/Stack/Stack';
 import React, { useCallback, useEffect, useState } from "react";
+import { Button, Card, Stack } from 'react-bootstrap';
 import { ActiveTabStorageService } from '../../services/active-tab-storage.service';
 import { ExtensionStorageService } from '../../services/extension-storage.service';
 import { KeyValueMap } from '../../types';
 import { IConfig } from '../../types';
-import styles from './popup-view.module.scss';
+import './popup-view.scss';
 
 export const PopupView = () => {
   const activeTabStorageService = ActiveTabStorageService.getService();
@@ -21,36 +20,51 @@ export const PopupView = () => {
     })
   }, []);
 
-  const copyValues = useCallback(async () => {
+  const useCurrent = useCallback(async () => {
     if (!config) return;
     const fieldsToSync = config.syncLocalStorageKeys || [];
-    activeTabStorageService.getValues(fieldsToSync, (result => {
+    await activeTabStorageService.getValues(fieldsToSync, (result => {
       extensionStorageService.setValues({
         syncValues: result
       });
     }));
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab) {
+      console.error('current tab not found');
+      return;
+    }
+    chrome.tabs.create({
+      active: true,
+      index: tab.index + 1,
+      url: config.localEnvironmentUrl
+    });
   }, [config]);
 
-  const setValues = async () => {
-    const { syncValues } = await extensionStorageService.getValues(['syncValues']);
-    activeTabStorageService.setValues(syncValues as KeyValueMap<string>);
-  }
-
-  const clearValues = async () => {
+  const clearValues = useCallback(async () => {
     let { syncValues } = await extensionStorageService.getValues(['syncValues']);
     const keys = Object.keys(syncValues as KeyValueMap<string>);
     await activeTabStorageService.clearValues(keys);
-    syncValues = {};
-    activeTabStorageService.setValues(syncValues as KeyValueMap<string>);
-  }
+  }, []);
+
+  // const clearSSOBrowsingData = async () => {
+  //   if (!config?.ssoDomain) return;
+  // }
 
   return (
-    <div className={ styles['component'] }>
-      <Stack spacing={ 1 }>
-        <Button variant="outlined" size="small" onClick={ copyValues }>Copy Values</Button>
-        <Button variant="outlined" size="small" onClick={ setValues }>Use Values</Button>
-        <Button variant="outlined" size="small" onClick={ clearValues }>Clear Values</Button>
-      </Stack>
+    <div className="popup-component">
+      <Card>
+        <Card.Header>Select Action</Card.Header>
+        <Card.Body>
+          <Stack gap={ 3 }>
+            <Button variant="outline-primary" onClick={ useCurrent }>Use Current</Button>
+            <Button variant="outline-primary" onClick={ clearValues }>Clear Values</Button>
+            {/* <Button variant="outline-primary" size="sm" onClick={ clearSSOBrowsingData }>Clear SSO Data</Button> */ }
+          </Stack>
+        </Card.Body>
+        <Card.Footer>
+          <Button size="sm" variant="outline-info"><i className="bi bi-gear"></i></Button>
+        </Card.Footer>
+      </Card>
     </div>
   );
 };
