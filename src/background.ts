@@ -12,7 +12,9 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
     config
   });
-  chrome.runtime.openOptionsPage();
+  chrome.action.setPopup({
+    popup: '../views/options.html'
+  })
 });
 
 chrome.runtime.onMessage.addListener(

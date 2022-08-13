@@ -1,7 +1,11 @@
 .options-component {
     display: flex;
     flex-flow: column nowrap;
-    padding: 20px;
+    width: 400px;
+
+    .card {
+        border-radius: 0;
+    }
 
     .options-section {
         margin-bottom: 20px;

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Card, Stack } from 'react-bootstrap';
+import { Button, Card, Container, Stack } from 'react-bootstrap';
 import { ActiveTabStorageService } from '../../services/active-tab-storage.service';
 import { ExtensionStorageService } from '../../services/extension-storage.service';
 import { KeyValueMap } from '../../types';
@@ -46,9 +46,13 @@ export const PopupView = () => {
     await activeTabStorageService.clearValues(keys);
   }, []);
 
-  // const clearSSOBrowsingData = async () => {
-  //   if (!config?.ssoDomain) return;
-  // }
+  const clearSSOBrowsingData = async () => {
+    if (!config?.ssoDomain) return;
+  }
+
+  const openOptions = useCallback(() => {
+    chrome.runtime.openOptionsPage();
+  }, []);
 
   return (
     <div className="popup-component">
@@ -56,13 +60,15 @@ export const PopupView = () => {
         <Card.Header>Select Action</Card.Header>
         <Card.Body>
           <Stack gap={ 3 }>
-            <Button variant="outline-primary" onClick={ useCurrent }>Use Current</Button>
-            <Button variant="outline-primary" onClick={ clearValues }>Clear Values</Button>
-            {/* <Button variant="outline-primary" size="sm" onClick={ clearSSOBrowsingData }>Clear SSO Data</Button> */ }
+            <Button variant="outline-primary" onClick={ useCurrent }>Use current page values</Button>
+            <Button variant="outline-primary" onClick={ clearValues }>Clear values</Button>
+            <Button variant="outline-primary" onClick={ clearSSOBrowsingData }>Clear SSO browsing data</Button>
           </Stack>
         </Card.Body>
         <Card.Footer>
-          <Button size="sm" variant="outline-info"><i className="bi bi-gear"></i></Button>
+          <div className='footer-container'>
+            <Button size="sm" variant="link" onClick={ openOptions }><i className="bi bi-gear"></i>&nbsp;Settings</Button>
+          </div>
         </Card.Footer>
       </Card>
     </div>
