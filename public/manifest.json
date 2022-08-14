@@ -18,7 +18,8 @@
     "storage",
     "tabs",
     "activeTab",
-    "scripting"
+    "scripting",
+    "browsingData"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -27,7 +28,6 @@
     "16": "assets/web-development-16.png",
     "24": "assets/web-development-24.png",
     "32": "assets/web-development-32.png",
-    "64": "assets/web-development-64.png",
-    "128": "assets/web-development-128.png"
+    "64": "assets/web-development-64.png"
   }
 }

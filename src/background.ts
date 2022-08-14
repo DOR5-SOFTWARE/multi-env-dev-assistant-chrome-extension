@@ -1,4 +1,7 @@
+import { ExtensionStorageService } from './services/extension-storage.service';
 import { IConfig } from './types';
+
+const extensionStorageService = ExtensionStorageService.getService();
 
 // set default configuration values on installation
 chrome.runtime.onInstalled.addListener(() => {
@@ -9,5 +12,21 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
     config
   });
-  chrome.runtime.openOptionsPage();
+  chrome.action.setPopup({
+    popup: '../views/options.html'
+  })
 });
+
+chrome.runtime.onMessage.addListener(
+  (message, sender, sendResponse) => {
+    switch (message) {
+      case 'get sync values': {
+        extensionStorageService.getValues(['syncValues']).then(result => {
+          sendResponse(result.syncValues);
+        });
+        break;
+      }
+    }
+    return true;
+  }
+);
