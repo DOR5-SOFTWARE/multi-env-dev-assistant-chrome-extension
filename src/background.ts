@@ -19,10 +19,6 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onMessage.addListener(
   (message, sender, sendResponse) => {
-    console.log('received message from page:', {
-      message,
-      sender
-    });
     switch (message) {
       case 'get sync values': {
         extensionStorageService.getValues(['syncValues']).then(result => {
